@@ -31,9 +31,10 @@ BASE_URL = 'https://developers.youversionapi.com/1.0/verse_of_the_day'.freeze
 TODAY = Date.today.yday.to_s
 TOKEN = '...'.freeze
 LANG = 'en'.freeze
-VERSION = 'KJV'.freeze
+VERSION_ID = '1'.freeze # KJV: 1, ASV: 12, RVES: 147, WEB: 20, ...
+COLOR = '#696969'.freeze
 
-url = URI("#{BASE_URL}/#{TODAY}?version=#{VERSION}")
+url = URI("#{BASE_URL}/#{TODAY}?version_id=#{VERSION_ID}")
 http = Net::HTTP.new(url.host, url.port)
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -46,9 +47,11 @@ request['accept-language'] = LANG
 
 response = JSON.parse http.request(request).read_body
 
+puts "\n---\nresponse: #{response['message']} | color=red" if response['message']
+
 bible_logo = Base64.encode64(open(BIBLE_LOGO).read).delete("\n")
 reference = response['verse']['human_reference']
-verse = response['verse']['text'].split.each_slice(8).map{|a|a.join ' '}.join("| color=black\n")
+verse = response['verse']['text'].split.each_slice(8).map{|a|a.join ' '}.join("| color=#{COLOR}\n")
 verse_url = response['verse']['url']
 image_url = 'https:' + response['image']['url'].gsub('{width}', '300').gsub('{height}', '300')
 image_base64 = Base64.encode64(open(image_url).read).delete("\n")
@@ -57,13 +60,13 @@ image_attribution = response['image']['attribution']
 puts "
 #{reference} | image=#{bible_logo}
 ---
-#{verse} | color=black
-#{reference} | color=black
+#{verse} | color=#{COLOR}
+#{reference} | color=#{COLOR}
 ---
 | image=#{image_base64}
 #{image_attribution}
 ---
 🔗  open in bible.com | href=#{verse_url}
 ---
-Refresh ⟳| refresh=true color=blue
+Refresh ⟳| refresh=true
 "
