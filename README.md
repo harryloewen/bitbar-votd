@@ -1,7 +1,7 @@
 # bitbar-votd
 Have the daily verse right in your Mac OS X Menu Bar
 
-Simple plugin for [BitBar](https://getbitbar.com)
+Simple plugin for [BitBar](https://getbitbar.com/plugins/Lifestyle/votd.1d.rb)
 using [YouVersion API](https://developers.youversion.com)
 
 
